@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200515104543_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515104543_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515105242_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515105242_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515114140_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515114140_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515114327_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515114327_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515114711_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515114711_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515115510_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515115510_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515120225_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515120225_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515121052_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515121052_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515121228_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515121228_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515121300_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515121300_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515121610_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515121610_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515124238_initialMigration.cs" />
+    <Compile Remove="Migrations\20200515124238_initialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200515135455_initialMigrationSetNull.cs" />
+    <Compile Remove="Migrations\20200515135455_initialMigrationSetNull.Designer.cs" />
+    <Compile Remove="Migrations\20200515135628_initialMigrationSetNull2.cs" />
+    <Compile Remove="Migrations\20200515135628_initialMigrationSetNull2.Designer.cs" />
+    <Compile Remove="Migrations\20200515135733_initialMigrationSetNull3.cs" />
+    <Compile Remove="Migrations\20200515135733_initialMigrationSetNull3.Designer.cs" />
+    <Compile Remove="Migrations\20200515140257_initialMigrationSetNull.cs" />
+    <Compile Remove="Migrations\20200515140257_initialMigrationSetNull.Designer.cs" />
+    <Compile Remove="Migrations\20200515140544_new.cs" />
+    <Compile Remove="Migrations\20200515140544_new.Designer.cs" />
+    <Compile Remove="Migrations\20200515140638_new.cs" />
+    <Compile Remove="Migrations\20200515140638_new.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Options\" />
+  </ItemGroup>
+
+</Project>

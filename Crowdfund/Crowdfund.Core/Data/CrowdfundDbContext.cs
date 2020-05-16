@@ -8,11 +8,19 @@ namespace Crowdfund.Core.Data
 {
     public class CrowdfundDbContext : DbContext
     {
+
+        private readonly string connectionString2 =
+            "Server =localhost; " +
+            "Database =master; " +
+            "User Id =sa; " +
+            "Password =admin!@#123;";
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseSqlServer("Server=localhost; Database=crowdfund; User Id=sa; Password=admin!@#123;");
+        //optionsBuilder.UseSqlServer("Server=localhost; Database=crowdfund; User Id=sa; Password=admin!@#123;");
+        optionsBuilder.UseSqlServer(this.connectionString2);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

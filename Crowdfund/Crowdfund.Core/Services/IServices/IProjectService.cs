@@ -11,7 +11,7 @@ namespace Crowdfund.Core.Services
     {
         Project CreateProject(CreateProjectOptions options);
         IQueryable<Project> SearchProject(SearchProjectOptions options);
-        Project UpdateProject(UpdateProjectOptions options);
-        bool DeleteProject(int ProjectId);
+        Project UpdateProject(UpdateProjectOptions options,int id);
+        bool DeleteProject(int id);
     }
 }

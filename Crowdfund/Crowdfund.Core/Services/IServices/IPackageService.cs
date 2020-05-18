@@ -10,9 +10,8 @@ namespace Crowdfund.Core.Services
     public interface IPackageService
     {
         Package CreatePackage(CreatePackageOptions options);
-        IQueryable<Package> SearchUser(SearchPackageOptions options);
-        Package UpdatePackage(UpdatePackageOptions options);
-        bool DeletePackage(int PackageId);
+        bool UpdatePackage(UpdatePackageOptions options, int id);
+        bool DeletePackage(int packageId);
         
     }
 }

@@ -21,15 +21,15 @@ namespace Crowdfund.Core.Services
 
         public Package CreatePackage(CreatePackageOptions options)
         {
-            if (options == null || options.ProjectId == null)
+            if (options == null || options.ProjectId == 0)
             {
                 return null;
             }
 
-            var project = dbContext
-                .Set<Project>()
-                .Where(p => p.ProjectId == options.ProjectId)
-                .SingleOrDefault();
+            var project = projectService.SearchProject(new SearchProjectOptions()
+            {
+                ProjectId = options.ProjectId
+            }).SingleOrDefault();
 
             if (project == null)
             {
@@ -52,14 +52,12 @@ namespace Crowdfund.Core.Services
             return dbContext.SaveChanges() > 0 ? package : null;
         }
 
-        public bool DeletePackage(int PackageId)
+        public bool DeletePackage(int packageId)
         {
-            //dbContext.Remove(dbContext.Set<Package>().Find(PackageId));
-
             try
             {
                 dbContext.Remove(dbContext.Set<Package>()
-                                              .Where(p => p.PackageId == PackageId)
+                                              .Where(p => p.PackageId == packageId)
                                               .SingleOrDefault());
             }
             catch (Exception ex)
@@ -71,17 +69,32 @@ namespace Crowdfund.Core.Services
             {
                 return true;
             }
+
             return false;
         }
 
-        public IQueryable<Package> SearchUser(SearchPackageOptions options)
+        public bool UpdatePackage(UpdatePackageOptions options, int id)
         {
-            throw new NotImplementedException();
-        }
+            var package = dbContext.Set<Package>()
+                .Where(p => p.PackageId == id)
+                .SingleOrDefault();
 
-        public Package UpdatePackage(UpdatePackageOptions options)
-        {
-            throw new NotImplementedException();
+            if (package == null) 
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(options.Description))
+            {
+                package.Description = options.Description;
+            }
+
+            if (dbContext.SaveChanges() > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

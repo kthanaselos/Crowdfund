@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+@model List<Crowdfund.Core.Model.Project>
+
+<h2 class="display-4">Projects</h2>
+<div class="row row-cols-1 row-cols-md-3">
+    @foreach (var project in Model)
+    {
+        <div class="col mb-4">
+            <div class="card h-100">
+                <img src="@project.Media[0].MediaUrl" class="card-img-top" alt="oops">
+                <div class="card-body">
+                    <h5 class="card-title">@project.Title</h5>
+                    <p class="card-text">@project.Description</p>
+                    <a href="@Url.Action("Details", "Project", new {id = project.ProjectId })" class="btn btn-primary">Go to project</a>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Project by @project.User.FirstName @project.User.LastName</small>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

@@ -15,6 +15,11 @@ namespace Crowdfund.Core.Data
         //    "User Id =sa; " +
         //    "Password =admin!@#123;";
 
+        public CrowdfundDbContext(DbContextOptions<CrowdfundDbContext> options) : base(options)
+        {
+
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

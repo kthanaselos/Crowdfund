@@ -104,13 +104,13 @@ namespace Crowdfund.Core.Services
             return user;
         }
 
-        public User UpdateUser(UpdateUserOptions options,int id)
+        public bool UpdateUser(UpdateUserOptions options,int id)
         {
             var user = GetUserById(id);
 
             if (options == null || user == null)
             {
-                return null;
+                return false;
             }
             if (options.FirstName != null)
             {
@@ -127,10 +127,10 @@ namespace Crowdfund.Core.Services
 
             if (dbContext.SaveChanges() > 0)
             {
-                return user;
+                return true;
             }
 
-            return null;
+            return false;
         }
 
         public bool DeleteUser(int id)

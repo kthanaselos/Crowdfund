@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewData["Title"] = "Details";
+}
+@model Crowdfund.Core.Model.User
+
+@if (Model == null)
+{
+    <div class="alert alert-warning" role="alert">
+        User not found
+    </div>
+    return;
+}
+<div class="card">
+    <div class="card-header">
+        User Details
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
+        <p class="card-text">Email: @Model.Email</p>
+        <p class="card-text">Is a Creator: @Model.IsProjectCreator</p>
+        <a class="btn btn-primary" href="@Url.Action("Edit", "User", new {id = Model.UserId })">Edit</a>
+    </div>
+</div>

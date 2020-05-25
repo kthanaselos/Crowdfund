@@ -11,7 +11,7 @@ namespace Crowdfund.Core.Services
     {
         User CreateUser(CreateUserOptions options);
         IQueryable<User> SearchUser(SearchUserOptions options);
-        User UpdateUser(UpdateUserOptions options,int id);
+        bool UpdateUser(UpdateUserOptions options,int id);
         User GetUserById(int id);
         bool DeleteUser(int id);
     }

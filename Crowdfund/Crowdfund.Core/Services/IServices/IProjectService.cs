@@ -9,9 +9,9 @@ namespace Crowdfund.Core.Services
 {
     public interface IProjectService
     {
-        Project CreateProject(CreateProjectOptions options);
+        Result<Project> CreateProject(CreateProjectOptions options);
         IQueryable<Project> SearchProject(SearchProjectOptions options);
-        Project UpdateProject(UpdateProjectOptions options,int id);
-        bool DeleteProject(int id);
+        Result<bool> UpdateProject(UpdateProjectOptions options,int id);
+        Result<bool> DeleteProject(int id);
     }
 }

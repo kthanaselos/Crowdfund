@@ -15,7 +15,8 @@
 
 <div class="card mb-3">
     <div class="card-header">
-        Project Details
+        <h2 class="card-title float-left">@Model.Title Details</h2>
+        <a href="@Url.Action("Edit", "Project", new {id = Model.ProjectId })" class="btn btn-primary float-right">Edit</a>
     </div>
     <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -60,8 +61,22 @@
         </a>
     </div>
     <div class="card-body">
-        <h2 class="card-title">@Model.Title</h2>
         <p class="card-text">@Model.Description</p>
+
+        <h3>Packages</h3>
+        <div class="row row-cols-1 row-cols-md-3">
+            @for (int i = 0; i < Model.Packages.Count(); i++)
+            {
+                <div class="card" style="width: 18rem;margin-left: 10px">
+                    <div class="card-body">
+                        <h5 class="card-title">Package #@i</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@Model.Packages[i].Price€</h6>
+                        <p class="card-text">@Model.Packages[i].Description</p>
+                        <a href="#" class="card-link">Purchase</a>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 
     <div class="card-footer text-muted">
@@ -69,18 +84,5 @@
     </div>
 </div>
 
-<h3>Packages</h3>
-<div class="row row-cols-1 row-cols-md-3">
-    @for (int i = 0; i < Model.Packages.Count(); i++)
-    {
-        <div class="card" style="width: 18rem;margin-left: 10px">
-            <div class="card-body">
-                <h5 class="card-title">Package #@i</h5>
-                <h6 class="card-subtitle mb-2 text-muted">@Model.Packages[i].Price€</h6>
-                <p class="card-text">@Model.Packages[i].Description</p>
-                <a href="#" class="card-link">Purchase</a>
-            </div>
-        </div>
-    }
-</div>
+
 

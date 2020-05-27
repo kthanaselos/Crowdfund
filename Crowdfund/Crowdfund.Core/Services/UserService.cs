@@ -17,28 +17,76 @@ namespace Crowdfund.Core.Services
         {
             dbContext = context;
         }
-        public User CreateUser(CreateUserOptions options)
+        public Result<User> CreateUser(CreateUserOptions options)
         {
             if (options == null)
             {
-                return null;
+                return Result<User>
+                    .CreateFailed(StatusCode.BadRequest, "Null options");
             }
 
-            var user = new User()
+            var user = new User();
+
+            if (!string.IsNullOrWhiteSpace(options.FirstName))
             {
-                FirstName = options.FirstName,
-                LastName = options.LastName,
-                Email = options.Email
-            };
+                user.FirstName = options.FirstName;
+            }
+            else
+            {
+                return Result<User>
+                    .CreateFailed(StatusCode.BadRequest, "First name was null or empty");
+            }
+
+            if (!string.IsNullOrWhiteSpace(options.LastName))
+            {
+                user.LastName = options.LastName;
+            }
+            else
+            {
+                return Result<User>
+                    .CreateFailed(StatusCode.BadRequest, "Last name was null or empty");
+            }
+
+            if (string.IsNullOrWhiteSpace(options.Email))
+            {
+                return Result<User>
+                    .CreateFailed(StatusCode.BadRequest, "Email was null or empty");
+            }
+
+            options.Email = options.Email.Trim();
+
+            if (options.Email.Contains("@") && options.Email.EndsWith(".com"))
+            {
+                user.Email = options.Email;
+            }
+            else
+            {
+                return Result<User>
+                    .CreateFailed(StatusCode.BadRequest, "Email submitted was not a valid email address");
+            }
 
             dbContext.Add(user);
 
-            if (dbContext.SaveChanges() > 0)
+            try
             {
-                return user;
-            }
+                if (dbContext.SaveChanges() > 0)
+                {
+                    return Result<User>
+                    .CreateSuccessful(user);
+                }
+                else
+                {
+                    return Result<User>
+                    .CreateFailed(StatusCode.InternalServerError, "User could not be created");
 
-            return null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Result<User>
+                    .CreateFailed(StatusCode.InternalServerError, ex.ToString());
+            }
         }
 
         public IQueryable<User> SearchUser(SearchUserOptions options)
@@ -93,8 +141,8 @@ namespace Crowdfund.Core.Services
         public User GetUserById(int id)
         {
             var user = SearchUser(new SearchUserOptions() { UserId = id })
-                .Include(u=>u.Projects)
-                .ThenInclude(p=>p.Packages)
+                .Include(u => u.Projects)
+                .ThenInclude(p => p.Packages)
                 .SingleOrDefault();
 
             if (user == null)
@@ -104,14 +152,26 @@ namespace Crowdfund.Core.Services
             return user;
         }
 
-        public bool UpdateUser(UpdateUserOptions options,int id)
+        public Result<bool> UpdateUser(UpdateUserOptions options, int id)
         {
+            var result = new Result<bool>();
+
+            if (options == null)
+            {
+                result.ErrorCode = StatusCode.BadRequest;
+                result.ErrorText = "Null options";
+                return result;
+            }
+
             var user = GetUserById(id);
 
-            if (options == null || user == null)
+            if (user == null)
             {
-                return false;
+                result.ErrorCode = StatusCode.NotFound;
+                result.ErrorText = $"User with id {id} was not found";
+                return result;
             }
+
             if (options.FirstName != null)
             {
                 user.FirstName = options.FirstName;
@@ -122,26 +182,78 @@ namespace Crowdfund.Core.Services
             }
             if (options.Email != null)
             {
-                user.Email = options.Email;
+                if (string.IsNullOrWhiteSpace(options.Email))
+                {
+                    result.ErrorCode = StatusCode.BadRequest;
+                    result.ErrorText = $"Email address is null or empty";
+                    return result;
+                }
+                options.Email = options.Email.Trim();
+
+                if (options.Email.Contains("@") && options.Email.EndsWith(".com"))
+                {
+                    user.Email = options.Email;
+                }
+                else
+                {
+                    result.ErrorCode = StatusCode.BadRequest;
+                    result.ErrorText = $"Email submitted is not a valid email address";
+                    return result;
+                }
             }
 
             if (dbContext.SaveChanges() > 0)
             {
-                return true;
+                result.ErrorCode = StatusCode.OK;
+                result.Data = true;
+                return result;
             }
 
-            return false;
+            result.ErrorCode = StatusCode.InternalServerError;
+            result.ErrorText = $"User could not be updated";
+            return result;
         }
 
-        public bool DeleteUser(int id)
+        public Result<bool> DeleteUser(int id)
         {
-            var user = GetUserById(id);
-            dbContext.Remove(user);
-            if (dbContext.SaveChanges() > 0)
+            var result = new Result<bool>();
+
+            if (id <= 0)
             {
-                return true;
+                result.ErrorCode = StatusCode.BadRequest;
+                result.ErrorText = $"Id {id} is invalid";
+                return result;
             }
-            return false;
+
+            var user = GetUserById(id);
+
+            if (user == null)
+            {
+                result.ErrorCode = StatusCode.NotFound;
+                result.ErrorText = $"User with id {id} was not found";
+                return result;
+            }
+
+            try
+            {
+                dbContext.Remove(user);
+                if (dbContext.SaveChanges() > 0)
+                {
+                    result.ErrorCode = StatusCode.OK;
+                    result.Data = true;
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.ErrorCode = StatusCode.InternalServerError;
+                result.ErrorText = ex.ToString();
+                return result;
+            }
+
+            result.ErrorCode = StatusCode.InternalServerError;
+            result.ErrorText = $"User could not be deleted";
+            return result;
         }
     }
 }

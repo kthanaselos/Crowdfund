@@ -4,17 +4,26 @@
 }
 @model Crowdfund.Core.Model.User
 
-<form method="post">
+<form>
     <h2>Edit info</h2>
     <div class="form-group">
+        <label name="UserId" id="UserId" hidden>@Model.UserId</label>
         <label for="InputFirstName">First Name</label>
-        <input type="text" value="@Model.FirstName" class="form-control" name="FirstName">
+        <input type="text" id="FirstName" value="@Model.FirstName" class="form-control" name="FirstName">
         <label for="InputLastName">Last Name</label>
-        <input type="text" value="@Model.LastName" class="form-control" name="LastName">
+        <input type="text" id="LastName" value="@Model.LastName" class="form-control" name="LastName">
         <label for="InputEmail">Email address</label>
-        <input type="email" value="@Model.Email" class="form-control" name="Email" aria-describedby="emailHelp">
+        <input type="email" id="Email" value="@Model.Email" class="form-control" name="Email" aria-describedby="emailHelp">
         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <input type="button" class="btn btn-primary" onclick="editUser()" value="Submit" />
+
+    <div class="alert alert-success js-success-alert" role="alert">
+        User was updated successfully!
+    </div>
+
+    <div class="alert alert-danger js-fail-alert" role="alert">
+        User could not be updated!
+    </div>
 </form>
 

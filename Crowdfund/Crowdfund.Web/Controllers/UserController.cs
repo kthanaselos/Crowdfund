@@ -65,17 +65,6 @@ namespace Crowdfund.Web.Controllers
             return View(user);
         }
 
-        [HttpPatch("{id}")]
-        public IActionResult Update(int id, [FromBody] UpdateUserOptions options)
-        {
-            if (userService.UpdateUser(options, id))
-            {
-                return Ok();
-            }
-
-            return StatusCode((int)HttpStatusCode.InternalServerError);
-        }
-
         [Route("search")]
         [HttpGet]
         public IActionResult Search(SearchUserOptions options)
@@ -85,16 +74,63 @@ namespace Crowdfund.Web.Controllers
                 return BadRequest();
             }
 
-            var customers = userService
+            var users = userService
                 .SearchUser(options)
                 .ToList();
 
-            if (customers == null)
+            if (users == null)
             {
                 return NotFound();
             }
 
-            return Json(customers);
+            return Json(users);
+        }
+
+        [Route("create")]
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [Route("create")]
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateUserOptions options)
+        {
+            var result = userService.CreateUser(options);
+
+            if (!result.Success)
+            {
+                return StatusCode((int)result.ErrorCode, result.ErrorText);
+            }
+
+            return Json(result.Data);
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult Update(int id,[FromBody] UpdateUserOptions options)
+        {
+            var result = userService.UpdateUser(options, id);
+
+            if (!result.Success)
+            {
+                return StatusCode((int)result.ErrorCode, result.ErrorText);
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var result = userService.DeleteUser(id);
+
+            if (!result.Success)
+            {
+                return StatusCode((int)result.ErrorCode, result.ErrorText);
+            }
+
+            return Ok();
         }
     }
 }

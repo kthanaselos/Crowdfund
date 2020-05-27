@@ -20,11 +20,12 @@ namespace Crowdfund.Core.Services
             //packageService = new PackageService(dbContext);
         }
 
-        public Project CreateProject(CreateProjectOptions options)
+        public Result<Project> CreateProject(CreateProjectOptions options)
         {
             if (options == null)
             {
-                return null;
+                return Result<Project>
+                    .CreateFailed(StatusCode.BadRequest, "Null options");
             }
 
             var user = userService.SearchUser(new SearchUserOptions()
@@ -36,7 +37,8 @@ namespace Crowdfund.Core.Services
 
             if (user == null)
             {
-                return null;
+                return Result<Project>
+                    .CreateFailed(StatusCode.BadRequest, $"The UserId {options.UserId} does not exist");
             }
 
             if (IsValidProjectOptions(options))
@@ -52,14 +54,30 @@ namespace Crowdfund.Core.Services
                 project.FinancialGoal = options.FinancialGoal;
 
                 user.Projects.Add(project);
+                user.IsProjectCreator = true;
 
-                if (dbContext.SaveChanges() > 0)
+                try
                 {
-                    return project;
+                    if (dbContext.SaveChanges() > 0)
+                    {
+                        return Result<Project>
+                        .CreateSuccessful(project);
+                    }
+                    else
+                    {
+                        return Result<Project>
+                        .CreateFailed(StatusCode.InternalServerError, "Project could not be made");
+                    }
+                }catch(Exception ex)
+                {
+                    return Result<Project>
+                    .CreateFailed(StatusCode.InternalServerError, ex.ToString());
                 }
+                
             }
 
-            return null;
+            return Result<Project>
+                        .CreateFailed(StatusCode.InternalServerError, "Project options are not valid");
         }
 
         public bool IsValidProjectOptions(CreateProjectOptions options)
@@ -75,20 +93,57 @@ namespace Crowdfund.Core.Services
             return true;
         }
 
-        public bool DeleteProject(int id)
+        public Result<bool> DeleteProject(int id)
         {
+            var result = new Result<bool>();
+
+            if (id <= 0)
+            {
+                result.ErrorCode = StatusCode.BadRequest;
+                result.ErrorText = $"Id {id} is invalid";
+                return result;
+            }
+
             var project = SearchProject(new SearchProjectOptions()
             {
                 ProjectId = id
-            }).Include(p => p.Packages).SingleOrDefault();
+            }).Include(p => p.Packages)
+                .Include(p=>p.User)
+                .ThenInclude(u=>u.Projects)
+                .SingleOrDefault();
 
-            dbContext.Remove(project);
-            if (dbContext.SaveChanges() > 0)
+            if (project == null)
             {
-                return true;
+                result.ErrorCode = StatusCode.NotFound;
+                result.ErrorText = $"Project with id {id} was not found";
+                return result;
             }
-            return false;
 
+            try
+            {
+                dbContext.Remove(project);
+
+                if (project.User.Projects.Count == 0)
+                {
+                    project.User.IsProjectCreator = false;
+                }
+
+                if (dbContext.SaveChanges() > 0)
+                {
+                    result.ErrorCode = StatusCode.OK;
+                    result.Data = true;
+                    return result;
+                }
+            }catch(Exception ex)
+            {
+                result.ErrorCode = StatusCode.InternalServerError;
+                result.ErrorText = ex.ToString();
+                return result;
+            }
+
+            result.ErrorCode = StatusCode.InternalServerError;
+            result.ErrorText = $"Customer could not be deleted";
+            return result;
         }
 
         public IQueryable<Project> SearchProject(SearchProjectOptions options)
@@ -130,11 +185,15 @@ namespace Crowdfund.Core.Services
             return query;
         }
 
-        public Project UpdateProject(UpdateProjectOptions options,int id)
+        public Result<bool> UpdateProject(UpdateProjectOptions options,int id)
         {
-            if (options == null || id == 0)
+            var result = new Result<bool>();
+
+            if (options == null)
             {
-                return null;
+                result.ErrorCode = StatusCode.BadRequest;
+                result.ErrorText = "Null options";
+                return result;
             }
 
             var project = dbContext
@@ -145,7 +204,9 @@ namespace Crowdfund.Core.Services
 
             if (project == null)
             {
-                return null;
+                result.ErrorCode = StatusCode.NotFound;
+                result.ErrorText = $"Project with id {id} was not found";
+                return result;
             }
 
             if (!string.IsNullOrWhiteSpace(options.Title))
@@ -165,10 +226,14 @@ namespace Crowdfund.Core.Services
 
             if (dbContext.SaveChanges() > 0)
             {
-                return project;
+                result.ErrorCode = StatusCode.OK;
+                result.Data = true;
+                return result;
             }
 
-            return null;
+            result.ErrorCode = StatusCode.InternalServerError;
+            result.ErrorText = $"Project could not be updated";
+            return result;
         }
     }
 }

@@ -9,10 +9,10 @@ namespace Crowdfund.Core.Services
 {
     public interface IUserService
     {
-        User CreateUser(CreateUserOptions options);
+        Result<User> CreateUser(CreateUserOptions options);
         IQueryable<User> SearchUser(SearchUserOptions options);
-        bool UpdateUser(UpdateUserOptions options,int id);
+        Result<bool> UpdateUser(UpdateUserOptions options,int id);
         User GetUserById(int id);
-        bool DeleteUser(int id);
+        Result<bool> DeleteUser(int id);
     }
 }

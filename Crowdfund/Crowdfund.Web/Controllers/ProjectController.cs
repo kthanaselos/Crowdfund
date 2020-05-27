@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Crowdfund.Core.Services;
@@ -49,6 +50,75 @@ namespace Crowdfund.Web.Controllers
             }
 
             return View(project);
+        }
+
+        [HttpGet("{id}/[action]")]
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+            var project = projectService.SearchProject(new SearchProjectOptions()
+            {
+                ProjectId = id
+            }).Include(p => p.Media)
+                .Include(p => p.StatusUpdates)
+                .Include(p => p.Packages)
+                .SingleOrDefault();
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return View(project);
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult Update(int id, [FromBody] UpdateProjectOptions options)
+        {
+            var result = projectService.UpdateProject(options, id);
+
+            if (!result.Success)
+            {
+                return StatusCode((int)result.ErrorCode, result.ErrorText);
+            }
+
+            return Ok();
+        }
+
+        [Route("search2")]
+        [HttpGet]
+        public IActionResult Search2()
+        {
+            return View();
+        }
+
+        [Route("search")]
+        [HttpGet]
+        public IActionResult Search(SearchProjectOptions options)
+        {
+            if (options == null)
+            {
+                return BadRequest();
+            }
+
+            var projects = projectService
+                .SearchProject(options)
+                .Include(p => p.Media)
+                .Include(p => p.StatusUpdates)
+                .Include(p => p.Packages)
+                .Include(p => p.User)
+                .ToList();
+
+            if (projects == null)
+            {
+                return NotFound();
+            }
+
+            //return Json(projects);
+            return View("Index", projects);
         }
     }
 }

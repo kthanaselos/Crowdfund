@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Crowdfund.Core.Services;
 using Crowdfund.Core.Services.Options;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Crowdfund.Web.Controllers
 {
@@ -35,7 +36,9 @@ namespace Crowdfund.Web.Controllers
             var user = userService.SearchUser(new SearchUserOptions()
             {
                 UserId = id
-            }).SingleOrDefault();
+            }).Include(u =>u.Projects)
+                .ThenInclude(p=>p.Media)
+                .SingleOrDefault();
 
             if (user == null)
             {

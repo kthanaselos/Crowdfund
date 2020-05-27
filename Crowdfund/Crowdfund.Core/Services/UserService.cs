@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Crowdfund.Core.Services
 {
@@ -55,7 +56,7 @@ namespace Crowdfund.Core.Services
 
             options.Email = options.Email.Trim();
 
-            if (options.Email.Contains("@") && options.Email.EndsWith(".com"))
+            if (IsValidEmail(options.Email))
             {
                 user.Email = options.Email;
             }
@@ -188,11 +189,23 @@ namespace Crowdfund.Core.Services
                     result.ErrorText = $"Email address is null or empty";
                     return result;
                 }
-                options.Email = options.Email.Trim();
 
-                if (options.Email.Contains("@") && options.Email.EndsWith(".com"))
+                //options.Email = options.Email.Trim();
+
+                //if (options.Email.Contains("@") && options.Email.EndsWith(".com"))
+                //{
+                //    user.Email = options.Email;
+                //}
+                //else
+                //{
+                //    result.ErrorCode = StatusCode.BadRequest;
+                //    result.ErrorText = $"Email submitted is not a valid email address";
+                //    return result;
+                //}
+
+                if (IsValidEmail(options.Email))
                 {
-                    user.Email = options.Email;
+                    user.Email = options.Email.Trim();
                 }
                 else
                 {
@@ -200,6 +213,7 @@ namespace Crowdfund.Core.Services
                     result.ErrorText = $"Email submitted is not a valid email address";
                     return result;
                 }
+
             }
 
             if (dbContext.SaveChanges() > 0)
@@ -212,6 +226,21 @@ namespace Crowdfund.Core.Services
             result.ErrorCode = StatusCode.InternalServerError;
             result.ErrorText = $"User could not be updated";
             return result;
+        }
+
+        bool IsValidEmail(string mail)
+        {
+            Regex mRegxExpression;
+            if (mail.Trim() != string.Empty)
+            { 
+                mRegxExpression = new Regex(@"^([a-zA-Z0-9_\-])([a-zA-Z0-9_\-\.]*)@(\[((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}|((([a-zA-Z0-9\-]+)\.)+))([a-zA-Z]{2,}|(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\])$");
+
+                if (!mRegxExpression.IsMatch(mail.Trim()))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public Result<bool> DeleteUser(int id)

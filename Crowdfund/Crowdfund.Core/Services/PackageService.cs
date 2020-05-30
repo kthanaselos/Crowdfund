@@ -19,11 +19,12 @@ namespace Crowdfund.Core.Services
             this.dbContext = context;
         }
 
-        public Package CreatePackage(CreatePackageOptions options)
+        public Result<Package> CreatePackage(CreatePackageOptions options)
         {
-            if (options == null || options.ProjectId == 0)
+            if (options == null)
             {
-                return null;
+                return Result<Package>
+                    .CreateFailed(StatusCode.BadRequest, "Null options");
             }
 
             var project = projectService.SearchProject(new SearchProjectOptions()
@@ -31,9 +32,11 @@ namespace Crowdfund.Core.Services
                 ProjectId = options.ProjectId
             }).SingleOrDefault();
 
+
             if (project == null)
             {
-                return null;
+                return Result<Package>
+                    .CreateFailed(StatusCode.BadRequest, $"The ProjectId {options.ProjectId} does not exist");
             }
 
             var package = new Package();
@@ -49,39 +52,94 @@ namespace Crowdfund.Core.Services
             }
 
             project.Packages.Add(package);
-            return dbContext.SaveChanges() > 0 ? package : null;
+
+            try
+            {
+                if (dbContext.SaveChanges() > 0)
+                {
+                    return Result<Package>
+                    .CreateSuccessful(package);
+                }
+                else
+                {
+                    return Result<Package>
+                    .CreateFailed(StatusCode.InternalServerError, "Package could not be created");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Result<Package>
+                .CreateFailed(StatusCode.InternalServerError, ex.ToString());
+            }
         }
 
-        public bool DeletePackage(int packageId)
+        public Result<bool> DeletePackage(int packageId)
         {
+            var result = new Result<bool>();
+
+            if (packageId <= 0)
+            {
+                result.ErrorCode = StatusCode.BadRequest;
+                result.ErrorText = $"Id {packageId} is invalid";
+                return result;
+            }
+
+            var package = dbContext.Set<Package>()
+                              .Where(p => p.PackageId == packageId)
+                              .SingleOrDefault();
+
+            if (package == null)
+            {
+                result.ErrorCode = StatusCode.NotFound;
+                result.ErrorText = $"Package with id {packageId} was not found";
+                return result;
+            }
+
             try
             {
                 dbContext.Remove(dbContext.Set<Package>()
                                               .Where(p => p.PackageId == packageId)
                                               .SingleOrDefault());
+
+                if (dbContext.SaveChanges() > 0)
+                {
+                    result.ErrorCode = StatusCode.OK;
+                    result.Data = true;
+                    return result;
+                }
             }
             catch (Exception ex)
             {
-                return false;
+                result.ErrorCode = StatusCode.InternalServerError;
+                result.ErrorText = ex.ToString();
+                return result;
             }
 
-            if (dbContext.SaveChanges() > 0)
-            {
-                return true;
-            }
-
-            return false;
+            result.ErrorCode = StatusCode.InternalServerError;
+            result.ErrorText = $"Package could not be deleted";
+            return result;
         }
 
-        public bool UpdatePackage(UpdatePackageOptions options, int id)
+        public Result<bool> UpdatePackage(UpdatePackageOptions options, int id)
         {
+            var result = new Result<bool>();
+
+            if (options == null)
+            {
+                result.ErrorCode = StatusCode.BadRequest;
+                result.ErrorText = "Null options";
+                return result;
+            }
+
             var package = dbContext.Set<Package>()
                 .Where(p => p.PackageId == id)
                 .SingleOrDefault();
 
             if (package == null) 
             {
-                return false;
+                result.ErrorCode = StatusCode.NotFound;
+                result.ErrorText = $"Package with id {id} was not found";
+                return result;
             }
 
             if (!string.IsNullOrWhiteSpace(options.Description))
@@ -91,10 +149,14 @@ namespace Crowdfund.Core.Services
 
             if (dbContext.SaveChanges() > 0)
             {
-                return true;
+                result.ErrorCode = StatusCode.OK;
+                result.Data = true;
+                return result;
             }
 
-            return false;
+            result.ErrorCode = StatusCode.InternalServerError;
+            result.ErrorText = $"Package could not be updated";
+            return result;
         }
     }
 }

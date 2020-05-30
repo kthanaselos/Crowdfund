@@ -11,6 +11,7 @@ namespace Crowdfund.Core.Services.Options
         public string Title { get; set; }
         public string Description { get; set; }
         public ProjectCategory Category { get; set; }
+        public List<string> MediaUrls { get; set; }
         public decimal FinancialGoal { get; set; }
     }
 }

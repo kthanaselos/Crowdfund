@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.OleDb;
 using System.Linq;
 using System.Threading.Tasks;
+using Crowdfund.Core.Model;
 using Crowdfund.Core.Services;
 using Crowdfund.Core.Services.Options;
 using Microsoft.AspNetCore.Mvc;
@@ -73,6 +75,31 @@ namespace Crowdfund.Web.Controllers
             }
 
             return View(project);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult Create()
+        {
+            var dummyProject = new Project();
+            return View(dummyProject);
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult Create([FromBody] CreateProjectOptions options)
+        {
+            var result = projectService.CreateProject(options);
+
+            if (!result.Success)
+            {
+                return StatusCode((int)result.ErrorCode, result.ErrorText);
+            }
+
+            //return Ok();
+            return Json(new {
+                projectId = result.Data.ProjectId,
+                description = result.Data.Description,
+                title = result.Data.Title
+            });
         }
 
         [HttpPatch("{id}")]

@@ -53,6 +53,17 @@ namespace Crowdfund.Core.Services
 
                 project.FinancialGoal = options.FinancialGoal;
 
+                foreach (var url in options.MediaUrls)
+                {
+                    if (!string.IsNullOrWhiteSpace(url))
+                    {
+                        project.Media.Add(new ProjectMedia()
+                        {
+                            MediaUrl = url
+                        });
+                    }
+                }
+
                 user.Projects.Add(project);
                 user.IsProjectCreator = true;
 
@@ -68,12 +79,13 @@ namespace Crowdfund.Core.Services
                         return Result<Project>
                         .CreateFailed(StatusCode.InternalServerError, "Project could not be made");
                     }
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     return Result<Project>
                     .CreateFailed(StatusCode.InternalServerError, ex.ToString());
                 }
-                
+
             }
 
             return Result<Project>
@@ -82,10 +94,11 @@ namespace Crowdfund.Core.Services
 
         public bool IsValidProjectOptions(CreateProjectOptions options)
         {
-            if ((string.IsNullOrWhiteSpace(options.Title)||
-                string.IsNullOrWhiteSpace(options.Description)||
-                !Enum.IsDefined(typeof(ProjectCategory),options.Category)) ||
-                options.FinancialGoal<=0m)
+            if ((string.IsNullOrWhiteSpace(options.Title) ||
+                string.IsNullOrWhiteSpace(options.Description) ||
+                !Enum.IsDefined(typeof(ProjectCategory), options.Category)) ||
+                options.MediaUrls.Count == 0 ||
+                options.FinancialGoal <= 0m)
             {
                 return false;
             }
@@ -108,8 +121,8 @@ namespace Crowdfund.Core.Services
             {
                 ProjectId = id
             }).Include(p => p.Packages)
-                .Include(p=>p.User)
-                .ThenInclude(u=>u.Projects)
+                .Include(p => p.User)
+                .ThenInclude(u => u.Projects)
                 .SingleOrDefault();
 
             if (project == null)
@@ -134,7 +147,8 @@ namespace Crowdfund.Core.Services
                     result.Data = true;
                     return result;
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 result.ErrorCode = StatusCode.InternalServerError;
                 result.ErrorText = ex.ToString();
@@ -185,7 +199,7 @@ namespace Crowdfund.Core.Services
             return query;
         }
 
-        public Result<bool> UpdateProject(UpdateProjectOptions options,int id)
+        public Result<bool> UpdateProject(UpdateProjectOptions options, int id)
         {
             var result = new Result<bool>();
 
@@ -200,6 +214,7 @@ namespace Crowdfund.Core.Services
                 .Set<Project>()
                 .Where(p => p.ProjectId == id)
                 .Include(p => p.Packages)
+                .Include(p => p.Media)
                 .SingleOrDefault();
 
             if (project == null)
@@ -222,6 +237,42 @@ namespace Crowdfund.Core.Services
             if (options.Category != null)
             {
                 project.Category = options.Category.Value;
+            }
+
+            if (options.MediaUrls != null)
+            {
+                project.Media.Clear();
+
+                var optionsVideo = options.MediaUrls[3];
+                options.MediaUrls.RemoveAt(3);
+
+                foreach (var url in options.MediaUrls)
+                {
+                    if (!string.IsNullOrWhiteSpace(url))
+                    {
+                        project.Media.Add(new ProjectMedia()
+                        {
+                            MediaUrl = url
+                        });
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(optionsVideo))
+                {
+                    if (optionsVideo.Contains("youtube"))
+                    {
+                        project.Media.Add(new ProjectMedia()
+                        {
+                            MediaUrl = optionsVideo
+                        });
+                    }
+                    else
+                    {
+                        result.ErrorCode = StatusCode.BadRequest;
+                        result.ErrorText = $"Not a video from youtube";
+                        return result;
+                    }
+                }
             }
 
             if (dbContext.SaveChanges() > 0)

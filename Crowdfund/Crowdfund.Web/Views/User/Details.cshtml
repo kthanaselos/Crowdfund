@@ -22,8 +22,11 @@
     </div>
 </div>
 
-<div class="card">
-    <h2 class="card-header">User Projects</h2>
+<div class="card" style="margin-top: 10px;">
+    <div class="card-header">
+        <h2 class="card-title float-left">User Projects</h2>
+        <a href="@Url.Action("Create", "Project")" class="btn btn-primary float-right">Create Project</a>
+    </div>
     <div class="card-body">
         <div class="container">
             <div class="row">
@@ -39,8 +42,10 @@
                     ? project.Description.Substring(0, 100) + " ..."
                     : project.Description)
                                 </p>
-
-                                <a href="@Url.Action("Details", "Project", new { id = project.ProjectId })" class="btn btn-primary" style="margin-top: auto; margin-right: auto;">Go to project</a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <a href="@Url.Action("Details", "Project", new { id = project.ProjectId })" class="btn btn-primary float-left" style="margin-top: auto; margin-right: auto;">Go to project</a>
+                                <a href="@Url.Action("Edit", "Project", new {id = project.ProjectId })" class="btn btn-primary float-right" style="margin-top: auto; margin-left: auto;">Edit</a>
                             </div>
                         </div>
                     </div>

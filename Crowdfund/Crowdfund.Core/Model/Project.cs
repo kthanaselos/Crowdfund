@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Crowdfund.Core.Model
@@ -27,6 +28,36 @@ namespace Crowdfund.Core.Model
             StatusUpdates = new List<ProjectStatusUpdate>();
             Packages = new List<Package>();
             FinancialProgress = 0M;
+        }
+
+        public string Thumbnail()
+        {
+            foreach (var media in Media)
+            {
+                if (!string.IsNullOrEmpty(media.MediaUrl))
+                {
+                    if (!media.MediaUrl.Contains("youtube.com"))
+                    {
+                        return media.MediaUrl;
+                    }
+                }
+            }
+            return "";
+        }
+
+        public string Video()
+        {
+            foreach (var media in Media)
+            {
+                if (!string.IsNullOrEmpty(media.MediaUrl))
+                {
+                    if (media.MediaUrl.Contains("youtube.com"))
+                    {
+                        return media.MediaUrl;
+                    }
+                }
+            }
+            return "";
         }
     }
 }

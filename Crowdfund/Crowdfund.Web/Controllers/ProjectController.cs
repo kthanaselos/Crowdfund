@@ -147,5 +147,18 @@ namespace Crowdfund.Web.Controllers
             //return Json(projects);
             return View("Index", projects);
         }
+
+        [HttpDelete("{id}/[action]")]
+        public IActionResult Delete(int id)
+        {
+            var result = projectService.DeleteProject(id);
+
+            if (!result.Success)
+            {
+                return StatusCode((int)result.ErrorCode, result.ErrorText);
+            }
+
+            return Ok();
+        }
     }
 }

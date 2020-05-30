@@ -15,7 +15,20 @@ projectSuccessAlert.hide();
 let projectFailAlert = $('.js-project-fail-alert');
 projectFailAlert.hide();
 
+let projectDeleteSuccessAlert = $('.js-project-delete-success-alert');
+projectDeleteSuccessAlert.hide();
+
+let projectDeleteFailAlert = $('.js-project-delete-fail-alert');
+projectDeleteFailAlert.hide();
+
 $('.new-project-form-packages').hide();
+
+$('#staticBackdrop').on('hide.bs.modal', function (e) {
+    var $if = $(e.delegateTarget).find('iframe');
+    var src = $if.attr("src");
+    $if.attr("src", '/empty.html');
+    $if.attr("src", src);
+});
 
 function editUser() {
     successAlert.hide();
@@ -77,16 +90,12 @@ function editProject() {
         $('#VideoURL').val()];
 
     projectid = $('#ProjectId');
-    debugger;
     sendData = {
         "Title": $('#Title').val(),
         "Description": $('#Description').val(),
         "Category": parseInt($('#Category').val()),
         "MediaURLs": mediaUrl
     }
-    debugger;
-    alert(JSON.stringify(sendData));
-    debugger;
     $.ajax({
         type: 'PATCH',
         url: `/project/${projectid.text()}`,
@@ -119,16 +128,14 @@ function createProject() {
         "FinancialGoal": parseFloat($('#FinancialGoal').val())
     }
     alert(JSON.stringify(sendData));
-    debugger;
     $.ajax({
         type: 'POST',
         url: `/project/create`,
         contentType: 'application/json',
         data: JSON.stringify(sendData)
     }).done(project => {
-        debugger;
-        successAlert.show().delay(1000);
-        successAlert.fadeOut(2000);
+        successAlert.show();
+        successAlert.fadeOut(2000).delay(1000);
         $('.new-project-form').hide();
         $('#ProjectId').val(project.projectId);
         $('.new-project-form-packages').show();
@@ -147,15 +154,13 @@ function addPackageToProject() {
         "Description": $('#Description').val(),
         "Price": parseFloat($('#Price').val())
     }
-    alert(JSON.stringify(sendData));
-    debugger;
+
     $.ajax({
         type: 'POST',
         url: `/package/create`,
         contentType: 'application/json',
         data: JSON.stringify(sendData)
     }).done(project => {
-        debugger;
         successAlert.show();
         successAlert.fadeOut(3000);
     }).fail(failureResponse => {
@@ -163,3 +168,20 @@ function addPackageToProject() {
         failAlert.fadeOut(3000);
     });
 }
+
+function deleteProject(id) {
+    projectDeleteSuccessAlert.hide();
+    projectDeleteFailAlert.hide();
+    $.ajax({
+        type: 'DELETE',
+        url: `/project/${id}/delete`
+    }).done(project => {
+        $(`#Project-${id}`).remove();
+        projectDeleteSuccessAlert.show();
+        projectDeleteSuccessAlert.fadeOut(3000);
+    }).fail(failureResponse => {
+        projectDeleteFailAlert.hide();
+        projectDeleteFailAlert.fadeOut(3000);
+    });
+}
+

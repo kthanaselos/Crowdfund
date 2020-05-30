@@ -4,28 +4,26 @@
 @model List<Crowdfund.Core.Model.Project>
 
 <h2 class="display-4">Projects</h2>
-<div class="container">
-    <div class="row">
-        @foreach (var project in Model)
-        {
-            <div class="col-sm-6 col-lg-4 mb-3">
-                <div class="card mb-3 h-100">
-                    <img src="@project.Thumbnail()" class="card-img-top" alt="oops">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">@project.Title</h5>
-                        <p class="card-text">
-                            @(!String.IsNullOrWhiteSpace(project.Description) && project.Description.Length >= 100
+<div class="row">
+    @foreach (var project in Model)
+    {
+        <div class="col-sm-6 col-lg-4 mb-3">
+            <div class="card mb-3 h-100">
+                <img src="@project.Thumbnail()" class="card-img-top img-thumbnail rounded card-thumbnail" alt="oops">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">@project.Title</h5>
+                    <p class="card-text">
+                        @(!String.IsNullOrWhiteSpace(project.Description) && project.Description.Length >= 100
                     ? project.Description.Substring(0, 100) + " ..."
                     : project.Description)
-                        </p>
+                    </p>
 
-                        <a href="@Url.Action("Details", "Project", new { id = project.ProjectId })" class="btn btn-primary" style="margin-top: auto; margin-right: auto;">Go to project</a>
-                    </div>
-                    <div class="card-footer">
-                        <small class="text-muted">Project by @project.User.FirstName @project.User.LastName</small>
-                    </div>
+                    <a href="@Url.Action("Details", "Project", new { id = project.ProjectId })" class="btn btn-primary" style="margin-top: auto; margin-right: auto;">Go to project</a>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Project by @project.User.FirstName @project.User.LastName</small>
                 </div>
             </div>
-        }
-    </div>
+        </div>
+    }
 </div>

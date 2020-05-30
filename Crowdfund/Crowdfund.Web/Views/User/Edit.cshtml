@@ -16,14 +16,14 @@
         <input type="email" id="Email" value="@Model.Email" class="form-control" name="Email" aria-describedby="emailHelp">
         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
     </div>
-    <input type="button" class="btn btn-primary" onclick="editUser()" value="Submit" />
+    <button type="button" class="btn btn-primary" onclick="editUser()"><i class="fa fa-floppy-o"></i> Save</button>
 
     <div class="alert alert-success js-success-alert" role="alert">
-        User was updated successfully!
+        <i class="fa fa-check"></i> User was updated successfully!
     </div>
 
     <div class="alert alert-danger js-fail-alert" role="alert">
-        User could not be updated!
+        <i class="fa fa-exclamation-triangle"></i> User could not be updated!
     </div>
 </form>
 

@@ -10,35 +10,35 @@
         <input name="UserId" id="UserId" value="6" style="display:none" />
 
         <label for="InputTitle">Title</label>
-        <input type="text" id="Title" value="" class="form-control" name="Title" required>
+        <input type="text" id="Title" value="" class="form-control" name="Title" placeholder="Enter your title" required>
 
         <label for="InputDescription">Description</label>
-        <textarea class="form-control" id="Description" name="Description" rows="3" required></textarea>
+        <textarea class="form-control" id="Description" name="Description" rows="3" required placeholder="Enter your project's description"></textarea>
 
         <label for="InputCategory">Category</label>
         <select asp-for="Category" asp-items="Html.GetEnumSelectList<Crowdfund.Core.Model.ProjectCategory>()" class="form-control" id="Category" name="Category" required>
-            <option disabled selected>Select Category</option>
+            <option disabled selected>Select Project Category</option>
         </select>
 
-        <label>Image URL</label>
-        <input type="url" id="ImageURL1" value="" class="form-control" name="ImageURL1" required>
-        <input type="url" id="ImageURL2" value=" " class="form-control" style="margin-top: 3px;" name="ImageURL2">
-        <input type="url" id="ImageURL3" value="  " class="form-control" style="margin-top: 3px;" name="ImageURL3">
+        <label><i class="fa fa-file-image-o"></i> Image URLs</label>
+        <input type="url" id="ImageURL1" value="" class="form-control" name="ImageURL1" placeholder="Image URL 1" required>
+        <input type="url" id="ImageURL2" value=" " class="form-control" style="margin-top: 3px;" name="ImageURL2" placeholder="Image URL 2">
+        <input type="url" id="ImageURL3" value="  " class="form-control" style="margin-top: 3px;" name="ImageURL3" placeholder="Image URL 3">
 
-        <label>Video URL</label>
-        <input type="url" id="VideoURL" value="    " class="form-control" name="VideoURL">
+        <label><i class="fa fa-youtube"></i> Video URL</label>
+        <input type="url" id="VideoURL" value="    "class="form-control" name="VideoURL" placeholder="Embedded Youtube Video URL">
 
         <label>Financial Goal</label>
-        <input type="number" id="FinancialGoal" value="" class="form-control" name="FinancialGoal" required />
+        <input type="number" id="FinancialGoal" value="" class="form-control" name="FinancialGoal" placeholder="Enter your projects financial target" required />
     </div>
     <input type="button" class="btn btn-primary js-submit-project" onclick="createProject()" value="Submit" />
 
     <div class="alert alert-success js-project-success-alert" role="alert">
-        Project was create successfully!
+        <i class="fa fa-check"></i> Project was create successfully!
     </div>
 
     <div class="alert alert-danger js-project-fail-alert" role="alert">
-        Project could not be created!
+        <i class="fa fa-exclamation-triangle"></i> Project could not be created!
     </div>
 </form>
 
@@ -58,10 +58,10 @@
     <input type="button" class="btn btn-primary" onclick="addPackageToProject()" value="Submit" />
 
     <div class="alert alert-success js-success-alert" role="alert">
-        Package was created successfully!
+        <i class="fa fa-check"></i> Package was created successfully!
     </div>
 
     <div class="alert alert-danger js-fail-alert" role="alert">
-        Package could not be created!
+        <i class="fa fa-exclamation-triangle"></i> Package could not be created!
     </div>
 </form>

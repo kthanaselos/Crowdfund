@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Crowdfund.Core.Model;
 using Crowdfund.Core.Services;
 using Crowdfund.Core.Services.Options;
+using Crowdfund.Core.Services.Options.CreateOptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -107,6 +108,24 @@ namespace Crowdfund.Web.Controllers
         {
             var result = projectService.UpdateProject(options, id);
 
+            if (!result.Success)
+            {
+                return StatusCode((int)result.ErrorCode, result.ErrorText);
+            }
+
+            return Ok();
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult PostStatus([FromBody] CreateProjectStatusOptions options)
+        {
+            return View();
+        }
+
+        [HttpPost("{id}/[action]")]
+        public IActionResult PostStatus(int id, [FromBody] CreateProjectStatusOptions options)
+        {
+            var result = projectService.CreateStatusUpdate(options, id);
             if (!result.Success)
             {
                 return StatusCode((int)result.ErrorCode, result.ErrorText);

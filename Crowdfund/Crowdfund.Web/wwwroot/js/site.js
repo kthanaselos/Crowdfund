@@ -180,8 +180,41 @@ function deleteProject(id) {
         projectDeleteSuccessAlert.show();
         projectDeleteSuccessAlert.fadeOut(3000);
     }).fail(failureResponse => {
-        projectDeleteFailAlert.hide();
+        projectDeleteFailAlert.show();
         projectDeleteFailAlert.fadeOut(3000);
     });
 }
+
+$('#NewStatusUpdateModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var title = button.data('title');
+    var id = button.data('id');// Extract info from data-* attributes
+
+    var modal = $(this);
+    modal.find('.modal-title').text('New status update for: ' + title);
+    modal.find('.modal-body input').val(id);
+
+    $('.js-project-newstatus-success-alert').hide();
+    $('.js-project-newstatus-fail-alert').hide();
+
+    modal.find('.js-post-update-button').on('click', () => {
+
+        sendData = {
+            "StatusDescription": $('#status-text').val()
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: `/project/${id}/postStatus`,
+            contentType: 'application/json',
+            data: JSON.stringify(sendData)
+        }).done(projectstatus => {
+            $('.js-project-newstatus-success-alert').show();
+            $('.js-project-newstatus-success-alert').fadeOut(3000);
+        }).fail(failureResponse => {
+            $('.js-project-newstatus-fail-alert').show();
+            $('.js-project-newstatus-fail-alert').fadeOut(3000);
+        });
+    });
+});
 

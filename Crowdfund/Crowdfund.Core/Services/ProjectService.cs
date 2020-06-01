@@ -1,6 +1,7 @@
 ﻿using Crowdfund.Core.Data;
 using Crowdfund.Core.Model;
 using Crowdfund.Core.Services.Options;
+using Crowdfund.Core.Services.Options.CreateOptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -284,6 +285,58 @@ namespace Crowdfund.Core.Services
 
             result.ErrorCode = StatusCode.InternalServerError;
             result.ErrorText = $"Project could not be updated";
+            return result;
+        }
+
+        public Result<bool> CreateStatusUpdate(CreateProjectStatusOptions options, int id)
+        {
+            var result = new Result<bool>();
+
+            if (options == null)
+            {
+                result.ErrorCode = StatusCode.BadRequest;
+                result.ErrorText = "Null options";
+                return result;
+            }
+
+            var project = dbContext
+                .Set<Project>()
+                .Where(p => p.ProjectId == id)
+                .Include(p => p.StatusUpdates)
+                .SingleOrDefault();
+
+            if (project == null)
+            {
+                result.ErrorCode = StatusCode.NotFound;
+                result.ErrorText = $"Project with id {id} was not found";
+                return result;
+            }
+
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(options.StatusDescription))
+                {
+                    project.StatusUpdates.Add(new ProjectStatusUpdate()
+                    {
+                        Status = options.StatusDescription
+                    });
+                }
+                if (dbContext.SaveChanges() > 0)
+                {
+                    result.ErrorCode = StatusCode.OK;
+                    result.Data = true;
+                    return result;
+                }
+            }
+            catch(Exception ex)
+            {
+                result.ErrorCode = StatusCode.InternalServerError;
+                result.ErrorText = ex.ToString();
+                return result;
+            }
+
+            result.ErrorCode = StatusCode.InternalServerError;
+            result.ErrorText = $"Status update could not be created";
             return result;
         }
     }

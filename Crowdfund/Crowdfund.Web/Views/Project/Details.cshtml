@@ -12,29 +12,19 @@
     </div>
     return;
 }
-@{string video = "";}
-@foreach (var media in Model.Media)
-{
-    if (string.IsNullOrEmpty(media.MediaUrl))
-    {
-        if (media.MediaUrl.Contains("youtube.com"))
-        {
-            video = media.MediaUrl;
-        }
-    }
-}
+
 <div class="card mb-3">
     <div class="card-header">
         <h2 class="card-title float-left">
             @Model.Title Details            <small class="text-muted">@Model.FinancialGoal</small>
         </h2>
-        <a href="@Url.Action("Edit", "Project", new {id = Model.ProjectId })" class="btn btn-primary float-right">Edit</a>
+        <a href="@Url.Action("Edit", "Project", new { id = Model.ProjectId })" class="btn btn-primary float-right">Edit</a>
     </div>
     <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-ride="carousel">
         <ol class="carousel-indicators">
             @for (int i = 0; i < Model.Media.Count(); i++)
             {
-                if (i != 3) //i=3 is always the video url. Video should not be carouseled
+                if (!Model.Media[i].MediaUrl.Contains("youtube"))// Video should not be carouseled
                 {
                     if (i == 0) //starting slide
                     {
@@ -50,7 +40,7 @@
         <div class="carousel-inner">
             @for (int i = 0; i < Model.Media.Count(); i++)
             {
-                if (i != 3) //i=3 is always the video url. Video should not be carouseled
+                if (!Model.Media[i].MediaUrl.Contains("youtube")) //Video should not be carouseled
                 {
                     if (i == 0)//starting slide
                     {
@@ -83,7 +73,21 @@
         <button type="button" class="btn btn-info btn-lg btn-block" data-toggle="modal" data-target="#staticBackdrop"><i class="fa fa-youtube-play"></i> Project Video</button>
         <h3>Description</h3>
         <p class="card-text">@Model.Description</p>
-        <h3>Packages</h3>
+        <!--Status Updates-->
+        <h3>StatusUpdates</h3>
+        <div class="row flex-nowrap overflow-auto">
+                @for (int i = Model.StatusUpdates.Count()-1; i >= 0; i--)
+            {
+                <div class="col-4">
+                    <div class="card card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">@Model.StatusUpdates[i].Created.DateTime</h6>
+                        <p class="card-text">@Model.StatusUpdates[i].Status</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <!--Packages-->
+        <h3><i class="fa fa-gift"></i> Packages</h3>
         <div class="row row-cols-1 row-cols-md-3">
             @for (int i = 0; i < Model.Packages.Count(); i++)
             {
@@ -100,7 +104,7 @@
     </div>
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">Project Video</h5>

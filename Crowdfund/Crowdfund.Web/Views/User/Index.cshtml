@@ -21,7 +21,7 @@
         @foreach (var u in Model)
         {
             <tr>
-                <th scope="row">@u.UserId</th>
+                <th scope="row"><button class="btn" onclick="virtualLogin(@u.UserId)">@u.UserId</button></th>
                 <td>@u.FirstName</td>
                 <td>@u.LastName</td>
                 <td>@u.Email</td>

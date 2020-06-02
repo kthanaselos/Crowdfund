@@ -218,3 +218,21 @@ $('#NewStatusUpdateModal').on('show.bs.modal', function (event) {
     });
 });
 
+function virtualLogin(id) {
+    debugger;
+    localStorage.setItem('userId', id);
+}
+
+function purchasePackage(packageId) {
+    var userId = localStorage.getItem('userId');
+
+    $.ajax({
+        type: 'POST',
+        url: `/package/${packageId}/purchase/${userId}`
+    }).done(successResponse => {
+        alert(`${userId} has purchaged package ${packageId}`)
+    }).fail(failureResponse => {
+        alert('Something went wrong,maybe you already purchased this package OR you just need to virtual login')
+    });
+}
+

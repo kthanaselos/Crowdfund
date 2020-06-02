@@ -16,7 +16,8 @@
 <div class="card mb-3">
     <div class="card-header">
         <h2 class="card-title float-left">
-            @Model.Title Details            <small class="text-muted">@Model.FinancialGoal</small>
+            @Model.Title Details<br />
+            <small class="text-muted">Raised @Model.FinancialProgress€ from the targeted @Model.FinancialGoal€</small>
         </h2>
         <a href="@Url.Action("Edit", "Project", new { id = Model.ProjectId })" class="btn btn-primary float-right">Edit</a>
     </div>
@@ -96,7 +97,7 @@
                         <h5 class="card-title">Package #@i</h5>
                         <h6 class="card-subtitle mb-2 text-muted">@Model.Packages[i].Price€</h6>
                         <p class="card-text">@Model.Packages[i].Description</p>
-                        <a href="#" class="card-link">Purchase</a>
+                        <button onclick="purchasePackage(@Model.Packages[i].PackageId)" class="card-link">Purchase</button>
                     </div>
                 </div>
             }

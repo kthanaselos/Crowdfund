@@ -42,5 +42,18 @@ namespace Crowdfund.Web.Controllers
 
             return Ok();
         }
+
+        [HttpPost("{packageId}/[action]/{userId}")]
+        public IActionResult Purchase(int packageId,int userId)
+        {
+            var result = packageService.PurchasePackage(packageId, userId);
+
+            if (!result.Success)
+            {
+                return StatusCode((int)result.ErrorCode, result.ErrorText);
+            }
+
+            return Ok();
+        }
     }
 }

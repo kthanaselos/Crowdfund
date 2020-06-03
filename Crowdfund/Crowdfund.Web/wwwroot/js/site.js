@@ -236,3 +236,16 @@ function purchasePackage(packageId) {
     });
 }
 
+let searchBox = $('#searchBox');
+searchBox.on("keyup", function (event) {
+    if (event.keyCode === 13) {
+        $('#searchButton').click();
+    }
+});
+
+let searchButton = $('#searchButton');
+searchButton.on('click', () => {
+    let text = $('#searchBox').val()
+    location.replace(`/project/search?Title=${text}`)
+});
+

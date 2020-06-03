@@ -134,13 +134,6 @@ namespace Crowdfund.Web.Controllers
             return Ok();
         }
 
-        [Route("search2")]
-        [HttpGet]
-        public IActionResult Search2()
-        {
-            return View();
-        }
-
         [Route("search")]
         [HttpGet]
         public IActionResult Search(SearchProjectOptions options)

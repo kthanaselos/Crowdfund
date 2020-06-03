@@ -179,7 +179,7 @@ namespace Crowdfund.Core.Services
 
             if (options.Title != null)
             {
-                query = query.Where(p => p.Title == options.Title);
+                query = query.Where(p => (p.Title == options.Title) || p.Title.Contains(options.Title));
             }
 
             if (options.Description != null)

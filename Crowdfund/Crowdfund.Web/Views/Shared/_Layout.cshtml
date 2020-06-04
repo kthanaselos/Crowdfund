@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - Crowdfund.Web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <header>
@@ -17,7 +18,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1" style="align-items: center">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
@@ -28,7 +29,6 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="User" asp-action="Index">All Users</a>
-                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="" asp-action="">Search TODO</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="User" asp-action="Create">Create User</a>
                                 </div>
@@ -41,14 +41,38 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Project" asp-action="Index">All Projects</a>
-                                    <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Project" asp-action="Search">Search Project</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Project" asp-action="Create">Create a Project</a>
                                 </div>
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <div class="btn-group">
+                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Categories
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="nav-link text-dark dropdown-item" href="/project/search?Category=1">Technology</a>
+                                    <a class="nav-link text-dark dropdown-item" href="/project/search?Category=2">House</a>
+                                    <a class="nav-link text-dark dropdown-item" href="/project/search?Category=3">Sports</a>
+                                    <a class="nav-link text-dark dropdown-item" href="/project/search?Category=4">Fashion</a>
+                                    <a class="nav-link text-dark dropdown-item" href="/project/search?Category=5">Health</a>
+                                    <a class="nav-link text-dark dropdown-item" href="/project/search?Category=6">Kids</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
+                        </li>
+                        <li class="nav-item" style="margin-left:auto;">
+                            <div class="p-1 bg-light rounded rounded-pill shadow-sm">
+                                <div class="input-group">
+                                    <input type="search" id="searchBox" placeholder="Search projects by title" aria-describedby="search-button" class="form-control border-0 bg-light">
+                                    <div class="input-group-append">
+                                        <button id="searchButton" class="btn btn-link text-primary"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -63,7 +87,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - Crowdfund.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2020 - Crowdfund.Web - <a asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

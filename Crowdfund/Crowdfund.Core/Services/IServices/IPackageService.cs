@@ -12,6 +12,7 @@ namespace Crowdfund.Core.Services
         Result<Package> CreatePackage(CreatePackageOptions options);
         Result<bool> UpdatePackage(UpdatePackageOptions options, int id);
         Result<bool> DeletePackage(int packageId);
-        
+        IQueryable<Package> SearchPackageById(int id);
+        Result<bool> PurchasePackage(int packageId, int userId);
     }
 }

@@ -31,7 +31,7 @@ namespace Crowdfund.Web.Controllers
             .ToList());         
         }
 
-        public IActionResult Privacy()
+        public IActionResult AboutUs()
         {
             return View();
         }

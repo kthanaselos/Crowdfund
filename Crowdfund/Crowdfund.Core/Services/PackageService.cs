@@ -1,6 +1,7 @@
 ﻿using Crowdfund.Core.Data;
 using Crowdfund.Core.Model;
 using Crowdfund.Core.Services.Options;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,13 @@ namespace Crowdfund.Core.Services
     public class PackageService : IPackageService
     {
         private IProjectService projectService;
+        private IUserService userService;
         private CrowdfundDbContext dbContext;
 
-        public PackageService(IProjectService projectservice, CrowdfundDbContext context)
+        public PackageService(IProjectService projectservice, IUserService uService, CrowdfundDbContext context)
         {
             this.projectService = projectservice;
+            this.userService = uService;
             this.dbContext = context;
         }
 
@@ -156,6 +159,70 @@ namespace Crowdfund.Core.Services
 
             result.ErrorCode = StatusCode.InternalServerError;
             result.ErrorText = $"Package could not be updated";
+            return result;
+        }
+
+        public IQueryable<Package> SearchPackageById(int id)
+        {
+            var query = dbContext
+                .Set<Package>()
+                .Where(p => p.PackageId == id);
+
+            return query;
+        }
+        public Result<bool> PurchasePackage(int packageId, int userId)
+        {
+            var result = new Result<bool>();
+
+            var user = userService.SearchUser(new SearchUserOptions()
+            {
+                UserId = userId
+            }).SingleOrDefault();
+
+            if (user == null)
+            {
+                result.ErrorCode = StatusCode.NotFound;
+                result.ErrorText = $"User with id {userId} was not found";
+                return result;
+            }
+
+            var package = SearchPackageById(packageId)
+                .Include(p=>p.Project)
+                .SingleOrDefault();
+
+            if (package == null)
+            {
+                result.ErrorCode = StatusCode.NotFound;
+                result.ErrorText = $"Package with id {packageId} was not found";
+                return result;
+            }
+
+            try
+            {
+                user.PurchasedPackages.Add(new PurchasedPackage()
+                {
+                    Package=package
+                });
+
+                //Update project's financial progress
+                package.Project.FinancialProgress += package.Price;
+
+                if (dbContext.SaveChanges() > 0)
+                {
+                    result.ErrorCode = StatusCode.OK;
+                    result.Data = true;
+                    return result;
+                }
+            }
+            catch(Exception ex)
+            {
+                result.ErrorCode = StatusCode.InternalServerError;
+                result.ErrorText = ex.ToString();
+                return result;
+            }
+
+            result.ErrorCode = StatusCode.InternalServerError;
+            result.ErrorText = $"Package could not be purchased";
             return result;
         }
     }

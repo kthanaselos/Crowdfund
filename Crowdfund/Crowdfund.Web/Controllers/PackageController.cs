@@ -30,10 +30,23 @@ namespace Crowdfund.Web.Controllers
             return Ok();
         }
 
-        [HttpDelete("[action]")]
+        [HttpDelete("[action]/{id}")]
         public IActionResult Delete(int id)
         {
             var result = packageService.DeletePackage(id);
+
+            if (!result.Success)
+            {
+                return StatusCode((int)result.ErrorCode, result.ErrorText);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("{packageId}/[action]/{userId}")]
+        public IActionResult Purchase(int packageId,int userId)
+        {
+            var result = packageService.PurchasePackage(packageId, userId);
 
             if (!result.Success)
             {

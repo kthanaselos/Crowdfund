@@ -4,8 +4,7 @@
 
 @model Crowdfund.Core.Model.Project
 
-@{  string video = "";
-    string[] img = { " ", "  ", "   " };
+@{  string[] img = { " ", "  ", "   " };
     int i = 0;
     @foreach (var media in Model.Media)
     {
@@ -24,33 +23,33 @@
     }
 
 }
-<form method="post">
-    <h2>Edit Projects Info</h2>
-    <div class="form-group">
-        <label name="ProjectId" id="ProjectId" hidden>@Model.ProjectId</label>
-        <label for="InputTitle">Title</label>
-        <input type="text" id="Title" value="@Model.Title" class="form-control" name="Title" required>
-        <label for="InputDescription">Description</label>
-        <textarea class="form-control" id="Description" name="Description" rows="3" required>@Model.Description</textarea>
-        <label for="InputCategory">Category</label>
-        <select asp-for="Category" asp-items="Html.GetEnumSelectList<Crowdfund.Core.Model.ProjectCategory>()" class="form-control" id="Category" name="Category" required>
-            <option disabled selected>Select Category</option>
-        </select>
-        <label>Image URL</label>
-        <input type="url" id="ImageURL1" value="@img[0]" class="form-control" name="ImageURL1" required>
-        <input type="url" id="ImageURL2" value="@img[1]" class="form-control" style="margin-top: 3px;" name="ImageURL2">
-        <input type="url" id="ImageURL3" value="@img[2]" class="form-control" style="margin-top: 3px;" name="ImageURL3">
-        <label>Video URL</label>
-        <input type="url" id="VideoURL" value="@Model.Video()" class="form-control" name="VideoURL">
-    </div>
-    <input type="button" class="btn btn-primary" onclick="editProject()" value="Submit" />
+    <form method="post">
+        <h2>Edit Projects Info</h2>
+        <div class="form-group">
+            <label name="ProjectId" id="ProjectId" hidden>@Model.ProjectId</label>
+            <label for="InputTitle">Title</label>
+            <input type="text" id="Title" value="@Model.Title" class="form-control" name="Title" required>
+            <label for="InputDescription">Description</label>
+            <textarea class="form-control" id="Description" name="Description" rows="3" required>@Model.Description</textarea>
+            <label for="InputCategory">Category</label>
+            <select asp-for="Category" asp-items="Html.GetEnumSelectList<Crowdfund.Core.Model.ProjectCategory>()" class="form-control" id="Category" name="Category" required>
+                <option disabled selected>Select Category</option>
+            </select>
+            <label><i class="fa fa-file-image-o"></i> Image URLs</label>
+            <input type="url" id="ImageURL1" value="@img[0]" class="form-control" name="ImageURL1" required>
+            <input type="url" id="ImageURL2" value="@img[1]" class="form-control" style="margin-top: 3px;" name="ImageURL2">
+            <input type="url" id="ImageURL3" value="@img[2]" class="form-control" style="margin-top: 3px;" name="ImageURL3">
+            <label><i class="fa fa-youtube"></i> Video URL</label>
+            <input type="url" id="VideoURL" value="@Model.Video()" class="form-control" name="VideoURL">
+        </div>
+        <button type="button" class="btn btn-primary" onclick="editProject()"><i class="fa fa-floppy-o"></i> Save</button>
 
-    <div class="alert alert-success js-success-alert" role="alert">
-        Project was updated successfully!
-    </div>
+        <div class="alert alert-success js-success-alert" role="alert">
+            <i class="fa fa-check"></i> Project was updated successfully!
+        </div>
 
-    <div class="alert alert-danger js-fail-alert" role="alert">
-        Project could not be updated!
-    </div>
-</form>
+        <div class="alert alert-danger js-fail-alert" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Project could not be updated!
+        </div>
+    </form>
 

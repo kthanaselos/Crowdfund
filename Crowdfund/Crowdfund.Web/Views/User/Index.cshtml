@@ -21,12 +21,12 @@
         @foreach (var u in Model)
         {
             <tr>
-                <th scope="row">@u.UserId</th>
+                <th scope="row"><button class="btn" onclick="virtualLogin(@u.UserId)">@u.UserId</button></th>
                 <td>@u.FirstName</td>
                 <td>@u.LastName</td>
                 <td>@u.Email</td>
                 <td>@u.IsProjectCreator</td>
-                <td><a class="nav-link" href="@Url.Action("Details", "User", new {id = u.UserId })">Details</a></td>
+                <td><a class="btn btn-dark" href="@Url.Action("Details", "User", new {id = u.UserId })"><i class="fa fa-address-card-o"></i> Details</a></td>
             </tr>
         }
     </tbody>

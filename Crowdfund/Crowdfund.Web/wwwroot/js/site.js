@@ -15,7 +15,20 @@ projectSuccessAlert.hide();
 let projectFailAlert = $('.js-project-fail-alert');
 projectFailAlert.hide();
 
+let projectDeleteSuccessAlert = $('.js-project-delete-success-alert');
+projectDeleteSuccessAlert.hide();
+
+let projectDeleteFailAlert = $('.js-project-delete-fail-alert');
+projectDeleteFailAlert.hide();
+
 $('.new-project-form-packages').hide();
+
+$('#staticBackdrop').on('hide.bs.modal', function (e) {
+    var $if = $(e.delegateTarget).find('iframe');
+    var src = $if.attr("src");
+    $if.attr("src", '/empty.html');
+    $if.attr("src", src);
+});
 
 function editUser() {
     successAlert.hide();
@@ -77,16 +90,12 @@ function editProject() {
         $('#VideoURL').val()];
 
     projectid = $('#ProjectId');
-    debugger;
     sendData = {
         "Title": $('#Title').val(),
         "Description": $('#Description').val(),
         "Category": parseInt($('#Category').val()),
         "MediaURLs": mediaUrl
     }
-    debugger;
-    alert(JSON.stringify(sendData));
-    debugger;
     $.ajax({
         type: 'PATCH',
         url: `/project/${projectid.text()}`,
@@ -119,16 +128,14 @@ function createProject() {
         "FinancialGoal": parseFloat($('#FinancialGoal').val())
     }
     alert(JSON.stringify(sendData));
-    debugger;
     $.ajax({
         type: 'POST',
         url: `/project/create`,
         contentType: 'application/json',
         data: JSON.stringify(sendData)
     }).done(project => {
-        debugger;
-        successAlert.show().delay(1000);
-        successAlert.fadeOut(2000);
+        successAlert.show();
+        successAlert.fadeOut(2000).delay(1000);
         $('.new-project-form').hide();
         $('#ProjectId').val(project.projectId);
         $('.new-project-form-packages').show();
@@ -147,15 +154,13 @@ function addPackageToProject() {
         "Description": $('#Description').val(),
         "Price": parseFloat($('#Price').val())
     }
-    alert(JSON.stringify(sendData));
-    debugger;
+
     $.ajax({
         type: 'POST',
         url: `/package/create`,
         contentType: 'application/json',
         data: JSON.stringify(sendData)
     }).done(project => {
-        debugger;
         successAlert.show();
         successAlert.fadeOut(3000);
     }).fail(failureResponse => {
@@ -163,3 +168,84 @@ function addPackageToProject() {
         failAlert.fadeOut(3000);
     });
 }
+
+function deleteProject(id) {
+    projectDeleteSuccessAlert.hide();
+    projectDeleteFailAlert.hide();
+    $.ajax({
+        type: 'DELETE',
+        url: `/project/${id}/delete`
+    }).done(project => {
+        $(`#Project-${id}`).remove();
+        projectDeleteSuccessAlert.show();
+        projectDeleteSuccessAlert.fadeOut(3000);
+    }).fail(failureResponse => {
+        projectDeleteFailAlert.show();
+        projectDeleteFailAlert.fadeOut(3000);
+    });
+}
+
+$('#NewStatusUpdateModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var title = button.data('title');
+    var id = button.data('id');// Extract info from data-* attributes
+
+    var modal = $(this);
+    modal.find('.modal-title').text('New status update for: ' + title);
+    modal.find('.modal-body input').val(id);
+
+    $('.js-project-newstatus-success-alert').hide();
+    $('.js-project-newstatus-fail-alert').hide();
+
+    modal.find('.js-post-update-button').on('click', () => {
+
+        sendData = {
+            "StatusDescription": $('#status-text').val()
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: `/project/${id}/postStatus`,
+            contentType: 'application/json',
+            data: JSON.stringify(sendData)
+        }).done(projectstatus => {
+            $('.js-project-newstatus-success-alert').show();
+            $('.js-project-newstatus-success-alert').fadeOut(3000);
+        }).fail(failureResponse => {
+            $('.js-project-newstatus-fail-alert').show();
+            $('.js-project-newstatus-fail-alert').fadeOut(3000);
+        });
+    });
+});
+
+function virtualLogin(id) {
+    debugger;
+    localStorage.setItem('userId', id);
+}
+
+function purchasePackage(packageId) {
+    var userId = localStorage.getItem('userId');
+
+    $.ajax({
+        type: 'POST',
+        url: `/package/${packageId}/purchase/${userId}`
+    }).done(successResponse => {
+        alert(`${userId} has purchaged package ${packageId}`)
+    }).fail(failureResponse => {
+        alert('Something went wrong,maybe you already purchased this package OR you just need to virtual login')
+    });
+}
+
+let searchBox = $('#searchBox');
+searchBox.on("keyup", function (event) {
+    if (event.keyCode === 13) {
+        $('#searchButton').click();
+    }
+});
+
+let searchButton = $('#searchButton');
+searchButton.on('click', () => {
+    let text = $('#searchBox').val()
+    location.replace(`/project/search?Title=${text}`)
+});
+

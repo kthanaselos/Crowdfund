@@ -18,7 +18,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1" style="align-items: center">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
@@ -29,7 +29,6 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="User" asp-action="Index">All Users</a>
-                                    @*<a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="" asp-action="">Search TODO</a>*@
                                     <div class="dropdown-divider"></div>
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="User" asp-action="Create">Create User</a>
                                 </div>
@@ -63,7 +62,7 @@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
                         </li>
                         <li class="nav-item" style="margin-left:auto;">
                             <div class="p-1 bg-light rounded rounded-pill shadow-sm">
@@ -88,7 +87,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - Crowdfund.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2020 - Crowdfund.Web - <a asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

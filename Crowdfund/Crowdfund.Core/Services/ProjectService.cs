@@ -135,12 +135,12 @@ namespace Crowdfund.Core.Services
 
             try
             {
-                dbContext.Remove(project);
-
-                if (project.User.Projects.Count == 0)
+                if (project.User.Projects.Count() == 1)
                 {
                     project.User.IsProjectCreator = false;
                 }
+
+                dbContext.Remove(project);
 
                 if (dbContext.SaveChanges() > 0)
                 {

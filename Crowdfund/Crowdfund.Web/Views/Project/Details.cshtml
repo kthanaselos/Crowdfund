@@ -16,10 +16,11 @@
 <div class="card mb-3">
     <div class="card-header">
         <h2 class="card-title float-left">
-            @Model.Title Details<br />
+            @Model.Title
+            <br />
             <small class="text-muted">Raised @Model.FinancialProgress€ from the targeted @Model.FinancialGoal€</small>
         </h2>
-        <a href="@Url.Action("Edit", "Project", new { id = Model.ProjectId })" class="btn btn-primary float-right">Edit</a>
+        <a href="@Url.Action("Edit", "Project", new { id = Model.ProjectId })" class="btn btn-primary float-right"><i class="fa fa-pencil"></i> Edit</a>
     </div>
     <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -71,13 +72,15 @@
     </div>
     <div class="card-body">
         <!-- Button trigger video modal -->
-        <button type="button" class="btn btn-info btn-lg btn-block" data-toggle="modal" data-target="#staticBackdrop"><i class="fa fa-youtube-play"></i> Project Video</button>
+        <button type="button" class="btn btn-info btn-lg btn-block" data-toggle="modal" data-target="#staticBackdrop"><i class="fa fa-youtube-play"></i> Project's Promo Video</button>
+        <hr />
         <h3>Description</h3>
         <p class="card-text">@Model.Description</p>
+        <hr />
         <!--Status Updates-->
         <h3>StatusUpdates</h3>
         <div class="row flex-nowrap overflow-auto">
-                @for (int i = Model.StatusUpdates.Count()-1; i >= 0; i--)
+            @for (int i = Model.StatusUpdates.Count() - 1; i >= 0; i--)
             {
                 <div class="col-4">
                     <div class="card card-body">
@@ -87,17 +90,18 @@
                 </div>
             }
         </div>
+        <hr />
         <!--Packages-->
         <h3><i class="fa fa-gift"></i> Packages</h3>
-        <div class="row row-cols-1 row-cols-md-3">
+        <div class="row">
             @for (int i = 0; i < Model.Packages.Count(); i++)
             {
-                <div class="card" style="width: 18rem;margin-left: 10px">
-                    <div class="card-body">
+                <div class="card row-col-md-4" style="width: 18rem;margin-left: 10px">
+                    <div class="card-body" style="width:" 200px;">
                         <h5 class="card-title">Package #@i</h5>
                         <h6 class="card-subtitle mb-2 text-muted">@Model.Packages[i].Price€</h6>
-                        <p class="card-text">@Model.Packages[i].Description</p>
-                        <button onclick="purchasePackage(@Model.Packages[i].PackageId)" class="card-link">Purchase</button>
+                        <p class="card-text text-truncate" style="overflow: hidden;">@Model.Packages[i].Description</p>
+                        <button type="button" class="btn btn-success" onclick="purchasePackage(@Model.Packages[i].PackageId)"><i class="fa fa-shopping-cart"></i> Purchase</button>
                     </div>
                 </div>
             }
@@ -127,4 +131,12 @@
     <div class="card-footer text-muted">
         <small class="text-muted">Project by @Model.User.FirstName @Model.User.LastName</small>
     </div>
+</div>
+
+<div class="alert alert-success js-success-alert" role="alert">
+    <i class="fa fa-check"></i> Package was purchased successfully!
+</div>
+
+<div class="alert alert-danger js-fail-alert" role="alert">
+    <i class="fa fa-exclamation-triangle"></i> Package could not be purchased!
 </div>

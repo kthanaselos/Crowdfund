@@ -4,43 +4,45 @@
 }
 @model Crowdfund.Core.Model.Project
 <!--Create project form-->
-<form method="post" class="new-project-form">
-    <h2>Create a project</h2>
-    <div class="form-group">
-        <input name="UserId" id="UserId" value="6" style="display:none" />
+    <form method="post" class="new-project-form">
+        <h2>Create a project</h2>
+        <hr />
+        <div class="form-group">
+            @* UserId for project to be created for *@
+            <input name="UserId" id="UserId" value="4" style="display:none" />
 
-        <label for="InputTitle">Title</label>
-        <input type="text" id="Title" value="" class="form-control" name="Title" placeholder="Enter your title" required>
+            <label for="InputTitle">Title</label>
+            <input type="text" id="Title" value="" class="form-control" name="Title" placeholder="Enter your title" required>
+            <br />
+            <label for="InputDescription">Description</label>
+            <textarea class="form-control" id="ProjectDescription" name="Description" rows="3" required placeholder="Enter your project's description"></textarea>
+            <br />
+            <label for="InputCategory">Category</label>
+            <select asp-for="Category" asp-items="Html.GetEnumSelectList<Crowdfund.Core.Model.ProjectCategory>()" class="form-control" id="Category" name="Category" required>
+                <option disabled selected>Select Project Category</option>
+            </select>
+            <br />
+            <label><i class="fa fa-file-image-o"></i> Image URLs</label>
+            <input type="url" id="ImageURL1" value="" class="form-control" name="ImageURL1" placeholder="Image URL 1" required>
+            <input type="url" id="ImageURL2" value=" " class="form-control" style="margin-top: 3px;" name="ImageURL2" placeholder="Image URL 2">
+            <input type="url" id="ImageURL3" value="  " class="form-control" style="margin-top: 3px;" name="ImageURL3" placeholder="Image URL 3">
+            <br />
+            <label><i class="fa fa-youtube"></i> Video URL</label>
+            <input type="url" id="VideoURL" value="    " class="form-control" name="VideoURL" placeholder="Embedded Youtube Video URL">
+            <br />
+            <label>Financial Goal</label>
+            <input type="number" step="0.01" min="0" id="FinancialGoal" value="" class="form-control" name="FinancialGoal" placeholder="Enter your projects financial target" required />
+        </div>
+        <input type="button" class="btn btn-primary js-submit-project" onclick="createProject()" value="Submit" />
 
-        <label for="InputDescription">Description</label>
-        <textarea class="form-control" id="Description" name="Description" rows="3" required placeholder="Enter your project's description"></textarea>
+        <div class="alert alert-success js-project-success-alert" role="alert">
+            <i class="fa fa-check"></i> Project was created successfully!
+        </div>
 
-        <label for="InputCategory">Category</label>
-        <select asp-for="Category" asp-items="Html.GetEnumSelectList<Crowdfund.Core.Model.ProjectCategory>()" class="form-control" id="Category" name="Category" required>
-            <option disabled selected>Select Project Category</option>
-        </select>
-
-        <label><i class="fa fa-file-image-o"></i> Image URLs</label>
-        <input type="url" id="ImageURL1" value="" class="form-control" name="ImageURL1" placeholder="Image URL 1" required>
-        <input type="url" id="ImageURL2" value=" " class="form-control" style="margin-top: 3px;" name="ImageURL2" placeholder="Image URL 2">
-        <input type="url" id="ImageURL3" value="  " class="form-control" style="margin-top: 3px;" name="ImageURL3" placeholder="Image URL 3">
-
-        <label><i class="fa fa-youtube"></i> Video URL</label>
-        <input type="url" id="VideoURL" value="    "class="form-control" name="VideoURL" placeholder="Embedded Youtube Video URL">
-
-        <label>Financial Goal</label>
-        <input type="number" id="FinancialGoal" value="" class="form-control" name="FinancialGoal" placeholder="Enter your projects financial target" required />
-    </div>
-    <input type="button" class="btn btn-primary js-submit-project" onclick="createProject()" value="Submit" />
-
-    <div class="alert alert-success js-project-success-alert" role="alert">
-        <i class="fa fa-check"></i> Project was create successfully!
-    </div>
-
-    <div class="alert alert-danger js-project-fail-alert" role="alert">
-        <i class="fa fa-exclamation-triangle"></i> Project could not be created!
-    </div>
-</form>
+        <div class="alert alert-danger js-project-fail-alert" role="alert">
+            <i class="fa fa-exclamation-triangle"></i> Project could not be created!
+        </div>
+    </form>
 
 <!--Create package form-->
 
@@ -50,18 +52,19 @@
         <input name="ProjectId" id="ProjectId" style="display:none" />
 
         <label for="InputDescription">Description</label>
-        <textarea class="form-control" id="Description" name="Description" rows="3" required></textarea>
+        <textarea class="form-control" id="PackageDescription" name="Description" rows="3" required></textarea>
 
         <label>Price</label>
-        <input type="number" id="Price" value="" class="form-control" name="Price" required />
+        <input type="number" step="0.01" min="0" id="Price" value="" class="form-control" name="Price" required />
     </div>
     <input type="button" class="btn btn-primary" onclick="addPackageToProject()" value="Submit" />
+    <button type="button" class="btn btn-secondary js-go-to-project">Finish</button>
 
-    <div class="alert alert-success js-success-alert" role="alert">
+    <div class="alert alert-success js-package-success-alert" role="alert">
         <i class="fa fa-check"></i> Package was created successfully!
     </div>
 
-    <div class="alert alert-danger js-fail-alert" role="alert">
+    <div class="alert alert-danger js-package-fail-alert" role="alert">
         <i class="fa fa-exclamation-triangle"></i> Package could not be created!
     </div>
 </form>

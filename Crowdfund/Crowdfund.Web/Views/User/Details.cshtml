@@ -13,19 +13,26 @@
 }
 
 <div class="card">
-    <h2 class="card-header">User Details</h2>
+    <h3 class="card-header"><i class="fa fa-address-card-o"></i> User Details</h3>
     <div class="card-body">
         <h5 class="card-title">Name: @Model.FirstName @Model.LastName</h5>
         <p class="card-text">Email: @Model.Email</p>
-        <p class="card-text">Is a Creator: @Model.IsProjectCreator</p>
+        <p class="card-text">Creator: @if (Model.IsProjectCreator)
+                {
+                    @:Yes
+                }
+                else
+                {
+                    @:No
+                }</p>
         <a class="btn btn-primary" href="@Url.Action("Edit", "User", new {id = Model.UserId })"><i class="fa fa-pencil"></i> Edit</a>
     </div>
 </div>
 
 <div class="card" style="margin-top: 10px;">
     <div class="card-header">
-        <h2 class="card-title float-left">Created Projects</h2>
-        <a href="@Url.Action("Create", "Project")" class="btn btn-success float-right"><i class="fa fa-plus"></i> Add Project</a>
+        <h3 class="card-title float-left"><i class="fa fa-file-powerpoint-o"></i> Created Projects</h3>
+        <button onclick="goToCreateProject(@Model.UserId)" class="btn btn-success float-right"><i class="fa fa-plus"></i> Add Project</button>
     </div>
     <div class="card-body">
         <div class="row">
@@ -44,7 +51,7 @@
                             <button type="button" class="btn btn-info float-left" style="margin-left: auto; margin-top: auto;" data-toggle="modal" data-target="#NewStatusUpdateModal" data-title="@project.Title.ToString()" data-id="@project.ProjectId.ToString()"><i class="fa fa-plus-square-o"></i> Post a new status</button>
                         </div>
                         <div class="card-footer text-muted">
-                            <a href="@Url.Action("Details", "Project", new { id = project.ProjectId })" class="btn btn-primary float-left" style="margin-top: auto; margin-right: auto;">Details</a>
+                            <a href="@Url.Action("Details", "Project", new { id = project.ProjectId })" class="btn btn-primary float-left" style="margin-top: auto; margin-right: auto;"><i class="fa fa-bars"></i> Details</a>
                             <button id="deleteProject" onclick="deleteProject(@project.ProjectId)" class="btn btn-danger float-right"><i class="fa fa-trash-o"></i> Delete</button>
                             <a href="@Url.Action("Edit", "Project", new {id = project.ProjectId })" class="btn btn-secondary float-right" style="margin-top: auto; margin-left: auto; margin-right: 3px;"><i class="fa fa-pencil-square-o"></i> Edit</a>
                         </div>

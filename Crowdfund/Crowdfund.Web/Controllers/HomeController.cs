@@ -1,26 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Crowdfund.Core.Services;
+using Crowdfund.Core.Services.Options;
+using Crowdfund.Web.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Crowdfund.Web.Models;
 
 namespace Crowdfund.Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        IProjectService projectService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IProjectService prjService)
         {
             _logger = logger;
+            projectService = prjService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return View(projectService.SearchProject(new SearchProjectOptions())
+            .Include(p => p.Media)
+            .Include(p => p.User)
+            .ToList());
         }
 
         public IActionResult AboutUs()

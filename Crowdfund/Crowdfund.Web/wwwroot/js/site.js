@@ -15,11 +15,23 @@ projectSuccessAlert.hide();
 let projectFailAlert = $('.js-project-fail-alert');
 projectFailAlert.hide();
 
+let packageSuccessAlert = $('.js-package-success-alert');
+packageSuccessAlert.hide();
+
+let packageFailAlert = $('.js-package-fail-alert');
+packageFailAlert.hide();
+
 let projectDeleteSuccessAlert = $('.js-project-delete-success-alert');
 projectDeleteSuccessAlert.hide();
 
 let projectDeleteFailAlert = $('.js-project-delete-fail-alert');
 projectDeleteFailAlert.hide();
+
+let userDeleteSuccessAlert = $('.js-user-delete-success-alert');
+userDeleteSuccessAlert.hide();
+
+let userDeleteFailAlert = $('.js-user-delete-fail-alert');
+userDeleteFailAlert.hide();
 
 $('.new-project-form-packages').hide();
 
@@ -51,6 +63,7 @@ function editUser() {
         successAlert.show();
         successAlert.fadeOut(3000);
     }).fail(failureResponse => {
+        failAlert.html(`<i class="fa fa-exclamation-triangle"></i> User could not be updated! <br />` + failureResponse.responseText);
         failAlert.show();
         failAlert.fadeOut(3000);
     });
@@ -74,9 +87,32 @@ function submitNewUser() {
     }).done(user => {
         successAlert.show();
         successAlert.fadeOut(3000);
+        localStorage.setItem('userId', user.userId);
     }).fail(failureResponse => {
+        failAlert.html(`<i class="fa fa-exclamation-triangle"></i> User could not be created! <br />` + failureResponse.responseText);
         failAlert.show();
         failAlert.fadeOut(3000);
+    });
+}
+
+function deleteUser(id) {
+    userDeleteSuccessAlert.hide();
+    userDeleteFailAlert.hide();
+
+    $.ajax({
+        type: 'DELETE',
+        url: `/user/${id}`
+    }).done(response => {
+        userDeleteSuccessAlert.show();
+        userDeleteSuccessAlert.fadeOut(2000);
+        setTimeout(function () {
+            location.reload();
+        }, 1000);
+        
+    }).fail(failureResponse => {
+        userDeleteFailAlert.html(`<i class="fa fa-exclamation-triangle"></i> User could not be deleted! <br />` + failureResponse.responseText);
+        userDeleteFailAlert.show();
+        userDeleteFailAlert.fadeOut(3000);
     });
 }
 
@@ -105,14 +141,15 @@ function editProject() {
         successAlert.show();
         successAlert.fadeOut(3000);
     }).fail(failureResponse => {
+        failAlert.html(`<i class="fa fa-exclamation-triangle"></i> Project could not be updated! <br />` + failureResponse.responseText);
         failAlert.show();
         failAlert.fadeOut(3000);
     });
 }
 
 function createProject() {
-    successAlert.hide();
-    failAlert.hide();
+    projectSuccessAlert.hide();
+    projectFailAlert.hide();
 
     let mediaUrl = [$('#ImageURL1').val(),
         $('#ImageURL2').val(),
@@ -120,38 +157,42 @@ function createProject() {
         $('#VideoURL').val()];
 
     sendData = {
-        "UserId": parseInt($('#UserId').val()),
+        //"UserId": parseInt($('#UserId').val()),
+        "UserId": parseInt(localStorage.getItem('userId')),
         "Title": $('#Title').val(),
-        "Description": $('#Description').val(),
+        "Description": $('#ProjectDescription').val(),
         "Category": parseInt($('#Category').val()),
         "MediaURLs": mediaUrl,
         "FinancialGoal": parseFloat($('#FinancialGoal').val())
     }
-    alert(JSON.stringify(sendData));
+
     $.ajax({
         type: 'POST',
         url: `/project/create`,
         contentType: 'application/json',
         data: JSON.stringify(sendData)
     }).done(project => {
-        successAlert.show();
-        successAlert.fadeOut(2000).delay(1000);
-        $('.new-project-form').hide();
-        $('#ProjectId').val(project.projectId);
-        $('.new-project-form-packages').show();
+        projectSuccessAlert.show();
+        projectSuccessAlert.fadeOut(2000);
+        setTimeout(function () {
+            $('.new-project-form').hide();
+            $('#ProjectId').val(project.projectId);
+            $('.new-project-form-packages').show();
+        }, 1000);
     }).fail(failureResponse => {
-        failAlert.show();
-        failAlert.fadeOut(3000);
+        projectFailAlert.html(`<i class="fa fa-exclamation-triangle"></i> Project could not be created! <br />` + failureResponse.responseText);
+        projectFailAlert.show();
+        projectFailAlert.fadeOut(3000);
     });
 }
 
 function addPackageToProject() {
-    successAlert.hide();
-    failAlert.hide();
+    packageSuccessAlert.hide();
+    packageFailAlert.hide();
 
     sendData = {
         "ProjectId": parseInt($('#ProjectId').val()),
-        "Description": $('#Description').val(),
+        "Description": $('#PackageDescription').val(),
         "Price": parseFloat($('#Price').val())
     }
 
@@ -161,13 +202,19 @@ function addPackageToProject() {
         contentType: 'application/json',
         data: JSON.stringify(sendData)
     }).done(project => {
-        successAlert.show();
-        successAlert.fadeOut(3000);
+        packageSuccessAlert.show();
+        packageSuccessAlert.fadeOut(3000);
     }).fail(failureResponse => {
-        failAlert.show();
-        failAlert.fadeOut(3000);
+        packageFailAlert.html(`<i class="fa fa-exclamation-triangle"></i> Package could not be created! <br />` + failureResponse.responseText);
+        packageFailAlert.show();
+        packageFailAlert.fadeOut(3000);
     });
 }
+
+$('.js-go-to-project').on('click', () => {
+    projectid = parseInt($('#ProjectId').val())
+    window.location.replace(`/project/${projectid}/details`);
+})
 
 function deleteProject(id) {
     projectDeleteSuccessAlert.hide();
@@ -180,6 +227,7 @@ function deleteProject(id) {
         projectDeleteSuccessAlert.show();
         projectDeleteSuccessAlert.fadeOut(3000);
     }).fail(failureResponse => {
+        projectDeleteFailAlert.html(`<i class="fa fa-exclamation-triangle"></i> User could not be created! <br />` + failureResponse.responseText);
         projectDeleteFailAlert.show();
         projectDeleteFailAlert.fadeOut(3000);
     });
@@ -219,7 +267,6 @@ $('#NewStatusUpdateModal').on('show.bs.modal', function (event) {
 });
 
 function virtualLogin(id) {
-    debugger;
     localStorage.setItem('userId', id);
 }
 
@@ -230,9 +277,13 @@ function purchasePackage(packageId) {
         type: 'POST',
         url: `/package/${packageId}/purchase/${userId}`
     }).done(successResponse => {
-        alert(`${userId} has purchaged package ${packageId}`)
+        successAlert.html(`<i class="fa fa-check"></i> User with ID=${userId} has purchaged package with ID=${packageId}`)
+        successAlert.show();
+        successAlert.fadeOut(3000);
     }).fail(failureResponse => {
-        alert('Something went wrong,maybe you already purchased this package OR you just need to virtual login')
+        failAlert.html(`<i class="fa fa-exclamation-triangle"></i> Package could not be purchased,maybe you already purchased this package OR you just need to virtual login <br />`);
+        failAlert.show();
+        failAlert.fadeOut(3000);
     });
 }
 
@@ -249,3 +300,7 @@ searchButton.on('click', () => {
     location.replace(`/project/search?Title=${text}`)
 });
 
+function goToCreateProject(userId) {
+    localStorage.setItem('userId', userId);
+    window.location.replace(`/project/create`);
+}

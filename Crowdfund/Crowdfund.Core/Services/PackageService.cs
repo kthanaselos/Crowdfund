@@ -48,10 +48,20 @@ namespace Crowdfund.Core.Services
             {
                 package.Description = options.Description;
             }
+            else
+            {
+                return Result<Package>
+                    .CreateFailed(StatusCode.BadRequest, $"Package description is empty");
+            }
 
             if (options.Price > 0M)
             {
                 package.Price = (decimal)options.Price;
+            }
+            else
+            {
+                return Result<Package>
+                    .CreateFailed(StatusCode.BadRequest, $"Price is not valid");
             }
 
             project.Packages.Add(package);

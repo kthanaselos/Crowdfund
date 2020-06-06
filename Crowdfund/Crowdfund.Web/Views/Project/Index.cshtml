@@ -3,12 +3,14 @@
 }
 @model List<Crowdfund.Core.Model.Project>
 
-<h2 class="display-4">Projects</h2>
+<h1><i class="fa fa-newspaper-o"></i> Projects</h1>
+<hr />
+<div class="divider"></div>
 <div class="row">
     @if (Model.Count == 0)
     {
         <div class="alert alert-warning" role="alert">
-            <i class="fa fa-exclamation-triangle"></i> No projects were found!
+            <i class="fa fa-exclamation-circle"></i> No projects were found!
         </div>
         return;
     }

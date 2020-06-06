@@ -10,12 +10,15 @@
         <label name="UserId" id="UserId" hidden>@Model.UserId</label>
         <label for="InputFirstName">First Name</label>
         <input type="text" id="FirstName" value="@Model.FirstName" class="form-control" name="FirstName">
+        <br />
         <label for="InputLastName">Last Name</label>
         <input type="text" id="LastName" value="@Model.LastName" class="form-control" name="LastName">
+        <br />
         <label for="InputEmail">Email address</label>
         <input type="email" id="Email" value="@Model.Email" class="form-control" name="Email" aria-describedby="emailHelp">
         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
     </div>
+
     <button type="button" class="btn btn-primary" onclick="editUser()"><i class="fa fa-floppy-o"></i> Save</button>
 
     <div class="alert alert-success js-success-alert" role="alert">
